@@ -11,7 +11,7 @@ let publisher = null;
 async function publish() {
   if ( publisher ) {
     console.log('killing publisher')
-    publisher.kill('SIGKILL')
+    await publisher.kill('SIGKILL')
   }
 
   console.log('publishing website');
