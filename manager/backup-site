@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+eval $(aws-env-vars export)
+
+GHOST_DIR=/var/www/ghost
+WEB_DIR=/var/www/static
+
+CMS_BUCKET_PREFIX=s3://${CMS_BUCKET}
+WEB_BUCKET_PREFIX=s3://${WEB_BUCKET}
+
+# Backup content
+aws s3 sync --delete --no-follow-symlinks $GHOST_DIR $CMS_BUCKET_PREFIX --exclude 'versions/*' --exclude .ghostpid

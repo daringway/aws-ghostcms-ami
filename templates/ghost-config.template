@@ -1,0 +1,39 @@
+{
+  "url": "https://{{  WEB_HOSTNAME }}/",
+  "server": {
+    "port": 2368,
+    "host": "127.0.0.1"
+  },
+  "database": {
+    "client": "mysql",
+    "connection": {
+      "host": "{{ DATABASE_HOST }}",
+      "user": "{{ DATABASE_USER }}",
+      "password": "{{ DATABASE_PASSWORD }}",
+      "database": "{{ DATABASE_NAME }}"
+    },
+    "pool": {
+      "min": 10
+    }
+  },
+  "mail": {
+    "transport": "SMTP",
+    "options": {
+      "service": "Mailgun",
+      "auth": {
+        "user": "{{ SMTP_USER }}",
+        "pass": "{{ SMTP_PASSWORD }}"
+      }
+    }
+  },
+  "logging": {
+    "transports": [
+      "file",
+      "stdout"
+    ]
+  },
+  "process": "systemd",
+  "paths": {
+    "contentPath": "/var/www/ghost/content"
+  }
+}
