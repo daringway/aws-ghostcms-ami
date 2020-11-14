@@ -9,8 +9,10 @@ cd /var/www
 git clone --single-branch https://github.com/daringway/aws-ec2-cli-tools.git
 bash ./aws-ec2-cli-tools/setup.sh
 
+https://github.com/daringway/ghost-manager.git /var/www/manager
+bash /var/www/manager/setup.sh
+
 mv /tmp/templates /var/www
-mv /tmp/manager   /var/www
 
 # Add yarn repo
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
@@ -37,13 +39,7 @@ sudo ufw allow 'Nginx Full'
 sudo npm install pm2@latest -g
 pm2 startup systemd
 
-for DIR in /var/www/manager/publisher /var/www/manager/starter
-do
-  cd $DIR
-  npm install
-  pm2 start $DIR
-done
-sudo pm2 startup
+
 
 ######Download and install Ghost######
 sudo mkdir -p /var/www/ghost
