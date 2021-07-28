@@ -7,7 +7,7 @@
     "source_ami_filter": {
       "filters": {
         "virtualization-type": "hvm",
-        "name": "ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*",
+        "name": "ubuntu/images/hvm-ssd/ubuntu-bionic-20.04-amd64-server-*",
         "root-device-type": "ebs"
       },
       "owners": ["099720109477"],
@@ -38,18 +38,7 @@
   "provisioners": [
     {
       "type": "file",
-      "source": "rc.local",
-      "destination": "/tmp/rc.local",
-      "pause_before": "30s"
-    },
-    {
-      "type": "file",
       "source": "templates",
-      "destination": "/tmp"
-    },
-    {
-      "type": "file",
-      "source": "manager",
       "destination": "/tmp"
     },
     {
