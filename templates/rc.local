@@ -1,5 +1,8 @@
 !#/bin/sh -e
 
+START_TS=$(date +%s)
+echo "ghost-serverless ts 0: starting"
+
 INSTALL_DIR=/var/www/ghost-serverless
 
 while ! aws sts get-caller-identity
