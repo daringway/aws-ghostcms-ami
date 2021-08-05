@@ -4,59 +4,91 @@
 # Leverages https://pm2.keymetrics.io/docs/usage/pm2-doc-single-page/
 
 INSTALL_DIR=/var/www/ghost-serverless
+RELEASE_VERSION=main
 NODE_VERSION=14
 
-mkdir /var/www
+if [[ $(id -u) != "0" ]]
+then
+  echo "ERROR: must run as root"
+  exit 2
+fi
 
-git clone --single-branch https://github.com/daringway/ghost-serverless $INSTALL_DIR
-bash /var/www/ghost-serverless/setup.sh
+START_TS=$(date +%s)
+echo "ghost-serverless ts 0: starting"
 
-mv /tmp/templates /var/www
+# Add Repos
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+apt-get update
 
-# Add repos
-curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-
-######Download and install Packages######
-sudo apt-get update
-sudo apt-get upgrade
-
-curl -sL https://deb.nodesource.com/setup+${NODE_VERSION}.x | sudo bash -
-sudo apt-get install -y ec2-instance-connect nodejs zip nginx yarn jq fish unzip
-#sudo snap install --classic aws-cli
-
-# Install aws cli v2
+apt-get install -y jq fish unzip
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip
-sudo ./aws/install
+./aws/install
+
+# Install rest of needed software packages
+curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash -
+apt-get install -y yarn  nginx nodejs
+npm install ghost-cli@latest pm2@latest eslint ghost-static-site-generator -g
 
 # change ubuntu to fish, yes really
-sudo chsh -s /usr/bin/fish ubuntu
+chsh -s /usr/bin/fish ubuntu
 
-# install ghost
-sudo npm install ghost-cli@latest pm2@latest eslint ghost-static-site-generator -g
+###### Download ghost serverless ######
+git clone --single-branch https://github.com/daringway/ghost-serverless $INSTALL_DIR
+
+echo "ghost-serverless ts $(( $(date +%s) - $START_TS )): core packages installed"
+
+#while ! aws sts get-caller-identity
+#do
+#  echo "Missing IAM Role or not attached , sleeping 15"
+#  sleep 15
+#done
+
+#echo "ghost-serverless ts $(( $(date +%s) - $START_TS )): AWS creds verified"
+
+# Setup the .env
+#$INSTALL_DIR/bin/update-env
+#source $INSTALL_DIR/.env
+#
+#hostname $( echo $CMS_HOSTNAME | tr . - )
+
+# Want to setup the DNS record early so DNS has time to update
+#IP=$(curl http://169.254.169.254/latest/meta-data/public-ipv4)
+#TTL=60 # It currently takes about 2 minutes for the rest of the setup
+#aws route53 change-resource-record-sets --hosted-zone-id $ZONE_ID --change-batch '{"Changes":[{"Action":"UPSERT","ResourceRecordSet":{"Name":"'$CMS_HOSTNAME'","Type":"A","TTL":'$TTL',"ResourceRecords":[{"Value":"'$IP'"}]}}]}'
+#
+#echo "ghost-serverless ts $(( $(date +%s) - $START_TS )): DNS updated"
+
+#echo "ghost-serverless ts $(( $(date +%s) - $START_TS )): all packages installed"
 
 # Setup firewall
-sudo ufw allow 'Nginx Full'
+#ufw allow 'Nginx Full'
 
-for DIR in $(ls -d $INSTALL_DIR/services/*)
-do
-  (cd $DIR; sudo npm install)
-done
+#for DIR in $(ls -d $INSTALL_DIR/services/*)
+#do
+#  (cd $DIR; npm install)
+#done
 
-######Download and install Ghost######
-sudo mkdir -p /var/www/ghost
-sudo chown -R ubuntu:ubuntu /var/www /home/ubuntu $INSTALL_DIR
-sudo chmod 775 /var/www/ghost
-cd /var/www/ghost
-ghost install local
-ghost setup linux-user systemd
-sudo rm -r /var/www/ghost/config.development.json /var/www/ghost/content /var/www/ghost/current
+#echo "ghost-serverless ts $(( $(date +%s) - $START_TS )): ghost-serverless npm packages installed"
+#
+#mkdir -p /var/www/ghost $INSTALL_DIR $WEB_DIR $BACKUP_DIR
+#chown -R ubuntu:ubuntu /var/www /home/ubuntu $INSTALL_DIR
+#chmod 775 /var/www/ghost
 
-# TODO run ghost install
-# TODO configure ghost for mailgun https://ghost.org/docs/concepts/config/#setup-an-email-sending-account
-
-# TODO update hostname
 # TODO update nginx upload limit
 
-exit 0
+# curl https://get.acme.sh | sh -s email=certs@daringway.com --home /etc/letsencrypt/
+# Wrap this in a webserver so you can see the status from the browser (Or at least give steps and not full logs)
+#su ubuntu -c $INSTALL_DIR/bin/site-restore
+
+#echo "ghost-serverless ts $(( $(date +%s) - $START_TS )): ghost site restored"
+
+# Setup temp nginx to status service
+# 1st restore site (not version)
+
+# Setup ghost-serverless services
+#su ubuntu -c "cd $INSTALL_DIR; pm2 start ecosystem.config.js"
+
+#echo "ghost-serverless ts $(( $(date +%s) - $START_TS )): ghost-serverless started"
+#echo "ghost-serverless ts $(( $(date +%s) - $START_TS )): done"
