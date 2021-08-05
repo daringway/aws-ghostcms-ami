@@ -36,4 +36,4 @@ npm install ghost-cli@latest pm2@latest eslint ghost-static-site-generator -g
 chsh -s /usr/bin/fish ubuntu
 
 ###### Download ghost serverless ######
-git clone --single-branch https://github.com/daringway/ghost-serverless $INSTALL_DIR
+git clone https://github.com/daringway/ghost-serverless $INSTALL_DIR
