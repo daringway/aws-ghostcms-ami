@@ -7,7 +7,7 @@
     "source_ami_filter": {
       "filters": {
         "virtualization-type": "hvm",
-        "name": "ubuntu/images/hvm-ssd/ubuntu-bionic-20.04-amd64-server-*",
+        "name": "ubuntu/images/hvm-ssd/ubuntu-*-20.04-amd64-server-*",
         "root-device-type": "ebs"
       },
       "owners": ["099720109477"],
@@ -27,12 +27,12 @@
       "Application": "ghost",
       "Base_AMI_Name": "{{ .SourceAMIName }}",
       "OS_Name": "Ubuntu",
-      "OS_Version": "18.04",
-      "OS_CODENAME": "bionic",
+      "OS_Version": "20.04",
+      "OS_CODENAME": "focal",
       "DISTRIB_ID": "Ubuntu",
-      "DISTRIB_RELEASE": "18.04",
-      "DISTRIB_CODENAME": "bionic",
-      "DISTRIB_DESCRIPTION": "Ubuntu 18.04.4 LTS"
+      "DISTRIB_RELEASE": "20.04",
+      "DISTRIB_CODENAME": "focal",
+      "DISTRIB_DESCRIPTION": "Ubuntu 20.04 LTS"
     }
   }],
   "provisioners": [
