@@ -47,6 +47,7 @@ build {
 
   provisioner "shell" {
     script = "./provision.sh"
+    execute_command = "sudo -u root /bin/bash -c '{{.Path}}'"
   }
 
 }
