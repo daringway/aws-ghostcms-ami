@@ -1,11 +1,11 @@
 #!/bin/bash -x
 
-mkdir /var/www
+sudo mkdir /var/www
 
-git clone --single-branch https://github.com/daringway/ghost-serverless. /var/www/ghost-serverless
-bash /var/www/ghost-serverless/setup.sh
+sudo git clone --single-branch https://github.com/daringway/ghost-serverless /var/www/ghost-serverless
+#bash /var/www/ghost-serverless/setup.sh
 
-mv /tmp/templates /var/www
+#cp /tmp/templates /var/www
 
 # Add yarn repo
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
