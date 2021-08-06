@@ -44,7 +44,7 @@ chsh -s /usr/bin/fish ubuntu
 # Install ghost
 mkdir /var/www/ghost
 cd /var/www/ghost
-ghost install local --no-start --no-enable
+su ubuntu -c "ghost install local --no-start --no-enable"
 rm -rf .ghost-cli .ghostpid config.deployment.json content current
 
 ###### Download ghost serverless ######
