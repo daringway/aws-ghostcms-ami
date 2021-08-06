@@ -3,6 +3,9 @@
 # Install Guidelines from https://ghost.org/docs/install/ubuntu/
 # Leverages https://pm2.keymetrics.io/docs/usage/pm2-doc-single-page/
 
+# https://www.packer.io/docs/other/debugging.html#issues-installing-ubuntu-packages
+while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for cloud-init...'; sleep 1; done
+
 INSTALL_DIR=/var/www/ghost-serverless
 NODE_VERSION=14
 
@@ -19,8 +22,6 @@ chmod +x /etc/rc.local
 # Update Ubuntu
 apt-get update
 apt-get -y upgrade
-
-sleep 30
 
 # Add Repos
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
