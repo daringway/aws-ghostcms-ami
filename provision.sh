@@ -43,6 +43,7 @@ chsh -s /usr/bin/fish ubuntu
 
 # Install ghost
 mkdir /var/www/ghost
+chown -R ubuntu:ubuntu /var/www/ghost
 cd /var/www/ghost
 su ubuntu -c "ghost install local --no-start --no-enable"
 rm -rf .ghost-cli .ghostpid config.deployment.json content current
