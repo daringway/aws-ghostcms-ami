@@ -20,6 +20,10 @@ chmod +x /etc/rc.local
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 
+# Update Ubuntu
+apt-get update
+apt-get -y upgrade
+
 apt-get install -y jq fish unzip
 
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
@@ -36,7 +40,3 @@ chsh -s /usr/bin/fish ubuntu
 
 ###### Download ghost serverless ######
 git clone https://github.com/daringway/ghost-serverless $INSTALL_DIR
-
-# Update Ubuntu
-apt-get update
-apt-get -y upgrade
