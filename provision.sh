@@ -20,11 +20,13 @@ chmod +x /etc/rc.local
 apt-get update
 apt-get -y upgrade
 
+sleep 30
+
 # Add Repos
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 
-apt-get install -y jq fish unzip
+apt-get -y install jq fish unzip
 
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip
