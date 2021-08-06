@@ -16,13 +16,13 @@ fi
 cp /tmp/rc.local /etc/rc.local
 chmod +x /etc/rc.local
 
-# Add Repos
-curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-
 # Update Ubuntu
 apt-get update
 apt-get -y upgrade
+
+# Add Repos
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 
 apt-get install -y jq fish unzip
 
