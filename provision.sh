@@ -38,5 +38,11 @@ npm install ghost-cli@latest pm2@latest eslint ghost-static-site-generator -g
 # change ubuntu to fish, yes really
 chsh -s /usr/bin/fish ubuntu
 
+# Install ghost
+mkdir /var/www/ghost
+cd /var/www/ghost
+ghost install local --no-start --no-enable
+rm -rf .ghost-cli .ghostpid config.deployment.json content current
+
 ###### Download ghost serverless ######
 git clone https://github.com/daringway/ghost-serverless $INSTALL_DIR
