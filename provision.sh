@@ -1,43 +1,52 @@
 #!/bin/bash -x
 
-sudo mkdir /var/www
+# Install Guidelines from https://ghost.org/docs/install/ubuntu/
+# Leverages https://pm2.keymetrics.io/docs/usage/pm2-doc-single-page/
 
-sudo git clone --single-branch https://github.com/daringway/ghost-serverless /var/www/ghost-serverless
-#bash /var/www/ghost-serverless/setup.sh
+# https://www.packer.io/docs/other/debugging.html#issues-installing-ubuntu-packages
+while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for cloud-init...'; sleep 1; done
 
-#cp /tmp/templates /var/www
+INSTALL_DIR=/var/www/ghost-serverless
+NODE_VERSION=14
 
-# Add yarn repo
-curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+if [[ $(id -u) != "0" ]]
+then
+  echo "ERROR: must run as root"
+  exit 2
+fi
 
-######Download and install Packages######
-sudo apt-get update
-sudo apt-get upgrade
+# Copy rc.local
+cp /tmp/rc.local /etc/rc.local
+chmod +x /etc/rc.local
 
-curl -sL https://deb.nodesource.com/setup_14.x | sudo bash -
-sudo apt-get install -y ec2-instance-connect nodejs zip nginx yarn jq fish
-sudo snap install --classic aws-cli
+# Update Ubuntu
+apt-get update
+apt-get -y upgrade
 
-# install ghost
-sudo npm install ghost-cli@latest -g
+# Add Repos
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 
-# Setup firewall
-sudo ufw allow 'Nginx Full'
+apt-get -y install jq fish unzip
 
-######Download and install Ghost######
-sudo mkdir -p /var/www/ghost
-sudo chown -R ubuntu:ubuntu /var/www /home/ubuntu
-sudo chmod 775 /var/www/ghost
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+./aws/install
+
+# Install rest of needed software packages
+curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash -
+apt-get install -y yarn nginx nodejs
+npm install ghost-cli@latest pm2@latest eslint ghost-static-site-generator -g
+
+# change ubuntu to fish, yes really
+chsh -s /usr/bin/fish ubuntu
+
+# Install ghost
+mkdir /var/www/ghost
+chown -R ubuntu:ubuntu /var/www/ghost
 cd /var/www/ghost
-ghost install local
-ghost setup linux-user systemd
-sudo rm -r /var/www/ghost/config.development.json /var/www/ghost/content /var/www/ghost/current
+su ubuntu -c "ghost install local --no-start --no-enable"
+rm -rf .ghost-cli .ghostpid config.deployment.json content current
 
-# TODO run ghost install
-# TODO configure ghost for mailgun https://ghost.org/docs/concepts/config/#setup-an-email-sending-account
-
-# TODO update hostname
-# TODO update nginx upload limit
-
-exit 0
+###### Download ghost serverless ######
+git clone https://github.com/daringway/ghost-serverless $INSTALL_DIR
