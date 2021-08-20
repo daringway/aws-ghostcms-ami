@@ -47,7 +47,7 @@ build {
 
   provisioner "file" {
     destination = "/tmp/"
-    source      = "ghost-serverless/"
+    source      = "ghost-serverless"
   }
 
   provisioner "shell" {
