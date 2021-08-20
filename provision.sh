@@ -49,4 +49,5 @@ su ubuntu -c "ghost install local --no-start --no-enable"
 rm -rf .ghost-cli .ghostpid config.deployment.json content current
 
 ###### Download ghost serverless ######
-git clone https://github.com/daringway/ghost-serverless $INSTALL_DIR
+#git clone https://github.com/daringway/ghost-serverless $INSTALL_DIR
+cp -R /tmp/ghost-serverless $INSTALL_DIR

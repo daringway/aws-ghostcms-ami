@@ -45,6 +45,11 @@ build {
     source      = "templates/"
   }
 
+  provisioner "file" {
+    destination = "/tmp/"
+    source      = "ghost-serverless"
+  }
+
   provisioner "shell" {
     script = "./provision.sh"
     execute_command = "sudo -u root /bin/bash -c '{{.Path}}'"
